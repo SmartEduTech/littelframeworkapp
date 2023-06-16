@@ -1,0 +1,53 @@
+<SCRIPT type="text/javascript">
+function changeformation(idf,idu){
+	 
+            
+			/****************Chargement de la liste des formations**********************/
+				$.ajax({
+					type:"POST",
+					url:"index.php?activity=habilitation",
+					data:{idformation:idf },
+					beforeSend :function(){
+						$('#'+idu).html("Encours...");
+					 
+					},
+					success:function(response){
+						$("#"+idu).html(response); 
+						 
+					}
+				});
+}
+$(function() {
+$.ajax({
+			type:"POST",
+			url:"index.php?activity=getformation", 
+			beforeSend :function(){
+				$('#formation1').html("<option>Encours... </option>");
+			 
+			},
+			success:function(response){
+				$("#formation1").html(response); 
+				 
+			}
+		}); 
+
+});
+
+</SCRIPT>
+
+<select  class="form-control form-control-lg" onchange="changeformation(this.value,'listeunite')" id="formation1" name="formation1" placeholder="Formation" required>
+		</select>  
+<div class="card card-info">
+<div class="card-header">
+  
+		
+	 
+</div>
+
+<div class="card-body" id="listeunite">
+
+</div>
+
+
+
+</div>

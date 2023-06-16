@@ -1,0 +1,709 @@
+<?php if($this->isNotInscript):?>
+<div class="col-md-8 center">
+<div class="card">
+<div class="card-header">
+<img src="images/logo-color.svg" alt="Logo UVT" style="width:100%;">
+<hr>
+<h1 class="text-center">Demande expirée<h1></div>
+<div class="card-body">
+<p>La demande de modification est éxpirée ou bien elle a été remplacée par une nouvelle demande.</p>
+</div>
+</div>
+</div> 
+<?php die();?>
+ 
+<?php endif;?>
+
+<script src='https://www.google.com/recaptcha/api.js'></script>
+ 
+<SCRIPT type="text/javascript">
+
+
+function remplirformation(idf,selectioner){
+	$.ajax({
+			type:"POST",
+			url:"index.php?activity=getformation", 
+			beforeSend :function(){$('#'+idf).html("<option>Encours... </option>");$('#'+idf).trigger("chosen:updated");},
+			success:function(response){
+				$("#"+idf).html(response);
+				if(selectioner!=""){
+					$("#"+idf+" option[value="+selectioner+"]").prop("selected",true);
+				}
+				
+				 
+			}
+		}); 
+}
+function changeformation(idf,idu,selectioner){
+	 
+            
+			/****************Chargement de la liste des formations**********************/
+				$.ajax({
+					type:"POST",
+					url:"index.php?activity=getunite",
+					data:{idformation:idf },
+					beforeSend :function(){
+						$('#'+idu).html("<option>Encours... </option>");
+					$('#'+idu).trigger("chosen:updated");
+					},
+					success:function(response){
+						$("#"+idu).html(response); 
+						 if(selectioner!=""){
+							$("#"+idu+" option[value="+selectioner+"]").prop("selected",true);
+						}
+					}
+				});
+}
+
+
+
+
+$(function() {
+	
+	
+	<?php $i=1; foreach($this->Participationecue as $f):?>
+		remplirformation("formation<?=$i?>","<?=$f['idformations']?>"); 
+		changeformation(<?=$f['idformations']?>,"unite<?=$i?>","<?=$f['idunite']?>");
+		  
+	<?php $i++; endforeach;?>
+	
+	
+	inProgress=false;
+	 var optmyform = {
+            beforeSend: function()  { },
+            uploadProgress: function(event, position, total, percentComplete) { 
+				$("#encours").html(percentComplete);
+				$("#progresschifre").html(percentComplete);
+				
+				$("#progressbar").css({'width': percentComplete+'%'}); 
+				 if(!inProgress){
+				 $("#formload").append("<div id=\"loadzone\" class=\"overlay\" > <i class=\"fas fa-2x fa-sync-alt fa-spin\"i></i><b id=\"progresschifre\"></b></div>");
+					inProgress=true;
+				} 
+			},
+            success: function() { },
+            complete: function(response)
+            {
+
+$("#loadzone").remove(); 
+                var obj = JSON.parse(response.responseText);
+                if(obj.status=="success"){
+                     $("#mainbodyinscript").html("<div class='alert alert-success'>"
+                        +"<button type='button' class='close' data-dismiss='alert'>X</button>"
+                        +"<h4 class='alert-heading'><?=\Smartedutech\Littlemvc\Langue::getString('Succès')?></h4>"
+                        +"<p> "+obj.message
+                        +" </p> </div>"); 
+ 
+						 // $("#loadzone").remove();  
+
+                     
+
+                }else  if(obj.status=="warning"){
+                     $("#messagewarning").html("<div class='alert alert-warning'>"
+                        +"<button type='button' class='close' data-dismiss='alert'>X</button>"
+                        +"<h4 class='alert-heading'><?=\Smartedutech\Littlemvc\Langue::getString('Noté Bien')?></h4>"
+                        +"<p> "+obj.message
+                        +" </p> </div>"); 
+ 
+						//  $("#loadzone").remove();  
+
+                     
+
+                }else{
+
+                    $("#progresschifre").html("<div class='alert alert-block alert-error fade in'>"
+                        +"<button type='button' class='close' data-dismiss='alert'>X</button>"
+                        +"<h4 class='alert-heading'><?=\Smartedutech\Littlemvc\Langue::getString('Error')?></h4>"
+                        +"<p id='merreur'> "+obj.message
+                        +" </p> </div>");
+						//$("#loadzone").remove(); 
+
+                }
+				 
+                return true;
+
+            },
+            error: function(response)
+            {
+				$("#loadzone").remove(); 
+                var obj = JSON.parse(response.responseText);
+                $("#progresschifre").html("<div class='alert alert-block alert-error fade in'>"
+                    +"<button type='button' class='close' data-dismiss='alert'>X</button>"
+                    +"<h4 class='alert-heading'>Bravo</h4>"
+                    +"<p> "+obj.message
+                    +" </p> </div>");
+
+                return false;
+            }
+
+        };
+
+          $("#myForm").ajaxForm(optmyform); 
+	
+	$.ajax({
+			type:"POST",
+			url:"index.php?activity=getuniversity",
+			 
+			beforeSend :function(){
+				$('#univ').html("<option>Encours... </option>"); 
+			},
+			success:function(response){
+				$("#univ").html(response); 
+				<?php if(isset($this->DemandeRecs['codeuniv']) && !empty($this->DemandeRecs['codeuniv'])):?>
+					 $("#univ option[value=<?=$this->DemandeRecs['codeuniv']?>]").prop("selected",true);
+					 
+					 
+					 $.ajax({
+						type:"POST",
+						url:"index.php?activity=getetablissement",
+						data:{univ:'<?=$this->DemandeRecs['codeuniv']?>' },
+						beforeSend :function(){$('#etab').html("<option>Encours... </option>");$('#etab').trigger("chosen:updated");},
+						success:function(response){
+							$("#etab").html(response); 
+							 <?php if(isset($this->DemandeRecs['codeetab']) && !empty($this->DemandeRecs['codeetab'])):?>
+							 $("#etab option[value='<?=$this->DemandeRecs['codeetab']?>']").prop("selected",true);
+							 <?php endif;?>  
+						}
+					});
+				<?php endif;?>  
+			}
+		});
+	
+	$("#univ").change(function(){
+            var opt=$(this).val();
+            
+			/****************Chargement de la liste des formations**********************/
+				$.ajax({
+					type:"POST",
+					url:"index.php?activity=getetablissement",
+					data:{univ:opt },
+					beforeSend :function(){$('#etab').html("<option>Encours... </option>");$('#etab').trigger("chosen:updated");},
+					success:function(response){
+						$("#etab").html(response); 
+						 
+					}
+				});
+	});
+	
+	
+	  
+            
+	/****************Chargement de la liste des formations**********************/
+	
+	/*remplirformation("formation1");
+	
+	
+	$("#formation").change(function(){
+           
+	});*/
+		
+		
+		
+		$.ajax({
+			type:"POST",
+			url:"index.php?activity=getgrade", 
+			beforeSend :function(){$('#grade').html("<option>Encours... </option>");$('#grade').trigger("chosen:updated");},
+			<?php if(isset($this->DemandeRecs['typecandidat']) && !empty($this->DemandeRecs['typecandidat']) && $this->DemandeRecs['typecandidat']  =='professionnel'):?>
+			
+			data:{typegrade:'pro' },
+			<?php elseif(isset($this->DemandeRecs['typecandidat']) && !empty($this->DemandeRecs['typecandidat']) && $this->DemandeRecs['typecandidat']  =='enseignant'):?>
+			data:{typegrade:'univ' },
+			
+			<?php endif;?>
+			success:function(response){
+				$("#grade").html(response); 
+				  <?php if(isset($this->DemandeRecs['codegrade']) && !empty($this->DemandeRecs['codegrade'])):?>
+					 $("#grade option[value='<?=$this->DemandeRecs['codegrade']?>']").prop("selected",true);
+				<?php endif;?>
+			}
+		}); 
+		 
+		  <?php if(isset($this->DemandeRecs['typecandidat']) && !empty($this->DemandeRecs['typecandidat']) && $this->DemandeRecs['typecandidat']  =='professionnel'):?>
+					$(".universitaire").hide();
+					$(".profesionnel").show();
+					
+					$('#entreprise').attr('required', 'required');
+					$('#postefonction').attr('required', 'required');
+					
+					$('#univ').removeAttr('required');
+					$('#etab').removeAttr('required');
+				<?php elseif(isset($this->DemandeRecs['typecandidat']) && !empty($this->DemandeRecs['typecandidat']) && $this->DemandeRecs['typecandidat']  =='enseignant'):?>
+					 $(".universitaire").show();
+					 $(".profesionnel").hide();
+					 
+					 $('#entreprise').removeAttr('required');
+					$('#postefonction').removeAttr('required');
+
+					 $('#univ').attr('required', 'required');
+					$('#etab').attr('required', 'required');
+				
+				<?php endif;?>
+		  
+	 $('input[name="univprive"]').click(function(){
+            var opt=$(this).val(); 
+            
+			/****************Chargement de la liste des formations**********************/
+			if(opt=="enseignant"){
+				 $(".universitaire").show();
+				 $(".profesionnel").hide();
+				 
+				 $('#entreprise').removeAttr('required');
+				$('#postefonction').removeAttr('required');
+
+				 $('#univ').attr('required', 'required');
+				$('#etab').attr('required', 'required');
+				
+				  
+				 $.ajax({
+					type:"POST",
+					url:"index.php?activity=getgrade", 
+					data:{typegrade:'univ' },
+					beforeSend :function(){$('#grade').html("<option>Encours... </option>");$('#grade').trigger("chosen:updated");},
+					success:function(response){
+						$("#grade").html(response); 
+						 
+					}
+				}); 
+			}else{
+				$(".universitaire").hide();
+				$(".profesionnel").show();
+				
+				$('#entreprise').attr('required', 'required');
+				$('#postefonction').attr('required', 'required');
+				
+				$('#univ').removeAttr('required');
+				$('#etab').removeAttr('required');
+				
+				$.ajax({
+					type:"POST",
+					url:"index.php?activity=getgrade",
+					data:{typegrade:'pro' },					
+					beforeSend :function(){$('#grade').html("<option>Encours... </option>");$('#grade').trigger("chosen:updated");},
+					success:function(response){
+						$("#grade").html(response); 
+						 
+					}
+				}); 
+			}
+				
+	});
+		  
+		  
+		  
+	 
+	
+	 
+});
+
+
+function addlineformation(tableadd){
+	var ligne;
+	ligne="<tr>";  
+	ligne+="<td>";
+	ligne+="<input type='text' class='form-control form-control-lg' name='eadformation[]' placeholder=\"Formations suivies en TICE et EAD \">"; 
+	ligne+="</td>"; 
+	ligne+="<td>";
+	ligne+="<input class='form-control form-control-lg' type='date' name='eadformationdate[]'>"; 
+	ligne+="</td>";	
+	ligne+="<td>";
+	ligne+="<button type=\"button\" value=\"+\" class='btn btn-danger' onClick=\"$(this).closest('tr').remove();\"><i class=\"fa fa-trash\"><i></button>";
+	ligne+="</td>";
+	ligne+="</tr>";
+	$("#"+tableadd).append(ligne);
+}
+
+function addlineprojet(tableadd){
+	var ligne;
+	ligne="<tr>";  
+	ligne+="<td>";
+	ligne+="<input type='text' class='form-control form-control-lg' name='eadprojet[]' placeholder=\"Coordination et/ou Participation à un projet en EAD\">"; 
+	ligne+="</td>";  
+	ligne+="<td>";
+	ligne+="<input class='form-control form-control-lg' type='date' name='eadProjetdate[]'>"; 
+	ligne+="</td>";
+	ligne+="<td>";
+	ligne+="<button type=\"button\" value=\"+\" class='btn btn-danger' onClick=\"$(this).closest('tr').remove();\"><i class=\"fa fa-trash\"><i></button>";
+	ligne+="</td>";
+	ligne+="</tr>";
+	$("#"+tableadd).append(ligne);
+}
+
+function addlineecue(tableadd){
+	var ligne;
+	ligne="<tr>";  
+	ligne+="<td>";
+	ligne+="<input type='text' class='form-control form-control-lg' name='eadprojet[]'>"; 
+	ligne+="</td>";  
+	ligne+="<td>";
+	ligne+="<input class='form-control form-control-lg' type='date' name='eadProjetdate[]'>"; 
+	ligne+="</td>";
+	ligne+="<td>";
+	ligne+="<button type=\"button\" value=\"+\" class='btn btn-danger' onClick=\"$(this).closest('tr').remove();\"><i class=\"fa fa-trash\"><i></button>";
+	ligne+="</td>";
+	ligne+="</tr>";
+	$("#"+tableadd).append(ligne);
+}
+
+var ecue=<?=($i) ? $i++ : 1?>;
+function addecue(tableecue){
+	ecue++;
+	var ligne; 
+	ligne="<tr>";  
+	ligne+="<td>"; 
+	ligne+="<select  class=\"form-control form-control-lg\" onchange=\"changeformation(this.value,'unite"+ecue+"')\" id=\"formation"+ecue+"\" name=\"formation[]\" placeholder=\"Formation\"> </select>";  
+	ligne+="</td>"; 
+ligne+="<td>"; 
+ligne+="</td>"; 	
+	ligne+="<td>"; 
+	ligne+="<select  class=\"form-control form-control-lg\" id=\"unite"+ecue+"\" name=\"unite[]\" placeholder=\"Unité\">";
+	ligne+="</select>"; 
+	ligne+="</td>";
+	ligne+="<td>";
+	ligne+="<button type=\"button\" value=\"+\" class='btn btn-danger' onClick=\"$(this).closest('tr').remove();\"><i class=\"fa fa-trash\"><i></button>";
+	ligne+="</td>";
+	ligne+="</tr>";
+	
+ 
+	
+	$("#"+tableecue).append(ligne);
+	
+	remplirformation("formation"+ecue);
+	
+}
+</SCRIPT>
+
+<style>
+
+@media only screen and (min-width: 768px) {
+	.textpmarg{
+		line-height : normal;
+	}
+}
+
+@media only screen and (min-width: 992px) {
+	.textpmarg{
+		line-height : 0;
+	}
+}
+</style>
+<div class="col-md-8 center">
+<div class="card" id="formload">
+<div class="card-header">
+	<img src="images/logo-color.svg" alt="Logo UVT" style="width:100%;">
+<hr>
+	<h2>Appel à manifestation d’intérêt pour assurer le tutorat à l’UVT</h2>
+	<p>
+	L&#39;UVT lance un appel à manifestation d’intérêt à destination d’enseignants universitaires / technologues rattachés aux universités tunisiennes/DGET et d’experts exerçant dans les organismes socio-économiques pour assurer des activités de tutorat.</p>
+	</p>
+	<p>		 
+	La mission de tutorat consiste principalement en l’élaboration d’espaces de cours et l’accompagnement des apprenants via la plateforme d’enseignement à distance(LMS) (pour plus de détails, consulter la charte tuteur ci-dessous). Par conséquent, la priorité est donnée aux candidats ayant une expérience en EAD. Le cas échéant, des formations en ingénierie de formations en ligne seront programmées selon les plannings annoncés par l’UVT.
+	</p>
+	<p>
+		Les compétences universitaires et professionnelles nationales intéressées par l'appel en cours, sont invitées à consulter les plans de cours des formations dispensés à l’UVT et candidater pour les modules de leurs spécialités.
+	</p>
+	<ul>
+	<li>
+	Consulter les plans d’études des formations dispensées à l’UVT : <a href="index.php?activity=habilitation" target="_blank"><b>Plans d’études UVT</b></a>
+	</li>
+	<li>
+	Consulter la charte tuteur: <a href="index.php?activity=chart-tuteur" target="_blank"><b>Charte Tuteur UVT</b></a>
+
+	</li>
+	</ul>
+	
+	<p style="color: #800000;text-decoration: underline; ">
+Si vous avez déjà déposé une candidature vous pouvez la modifier en cliquant sur le lien suivant : <a href="?activity=demande-modif-ma-candidature"	>Cliquez-ici</a>
+	</p> 
+	
+	
+</div>
+
+<div class="card-body" id="mainbodyinscript">
+
+<b class="text-red">Obligatoire *</b><br>
+	
+	<div class="progress progress-xs progress-striped active">
+		<div class="progress-bar bg-success" id="progressbar" style="width: 0%"></div>
+		 
+	</div>
+	<b id="encours"></b>
+	<hr>
+<div id="messagewarning"></div>
+ <form id="myForm" enctype="multipart/form-data" method="post" action="index.php?activity=savemodifinscription"   class="form-horizontal">
+ 
+ <input type="hidden"  name="code" value="<?=(isset($this->code) && !empty($this->code)) ? $this->code : ""?>" required>
+
+
+ <div class="card">
+ <div class="card-header bg-lightblue color-palette">Informations personnelles</div>
+<div class="card-body"> 
+<div class="form-group row">
+	<label for="nom" class="col-sm-3 col-form-label">Nom <b class="text-red">*</b></label>
+	<div class="col-sm-9">
+	<input type="text" class="form-control form-control-lg" id="nom"  name="nom" placeholder="Nom" value="<?=(isset($this->DemandeRecs['nom']) && !empty($this->DemandeRecs['nom'])) ? $this->DemandeRecs['nom'] : ""?>" required>
+	</div>
+</div>
+
+<div class="form-group row">
+	<label for="nom" class="col-sm-3 col-form-label">Prénom <b class="text-red">*</b></label>
+	<div class="col-sm-9">
+	<input type="text" class="form-control form-control-lg" id="prenom" name="prenom" placeholder="Prénom" value="<?=(isset($this->DemandeRecs['prenom']) && !empty($this->DemandeRecs['prenom'])) ? $this->DemandeRecs['prenom'] : ""?>" required>
+	</div>
+</div>
+<div class="form-group row">
+	<label for="cin3" class="col-sm-3 col-form-label"> 03 derniers chiffres de votre CIN (Carte d'identité nationale) <b class="text-red">*</b></label>
+	<div class="col-sm-9">
+	<input type="number" min="0" max="999" class="form-control form-control-lg" id="cin3" name="cin3"placeholder="3 derniers chiffres CIN" value="<?=(isset($this->DemandeRecs['cin']) && !empty($this->DemandeRecs['cin'])) ? $this->DemandeRecs['cin'] : ""?>" required>
+	</div>
+</div>
+<div class="form-group row">
+	<label for="email" class="col-sm-3 col-form-label">Email <b class="text-red">*</b></label>
+	<div class="col-sm-9">
+	<input type="email" class="form-control form-control-lg" id="email" name="email"placeholder="email" value="<?=(isset($this->DemandeRecs['email']) && !empty($this->DemandeRecs['email'])) ? $this->DemandeRecs['email'] : ""?>" required>
+	</div>
+</div>
+
+<div class="form-group row">
+	<label for="tel" class="col-sm-3 col-form-label">Numéro de téléphone portable <b class="text-red">*</b></label>
+	<div class="col-sm-9">
+	<input type="text" class="form-control form-control-lg" id="tel" name="tel" placeholder="tel" value="<?=(isset($this->DemandeRecs['tel']) && !empty($this->DemandeRecs['tel'])) ? $this->DemandeRecs['tel'] : ""?>" required>
+	</div>
+</div>
+
+
+<div class="form-group row clearfix">
+	  <div class="icheck-primary d-inline">
+		<input type="radio" id="univprive1" name="univprive"  value="enseignant" <?=(isset($this->DemandeRecs['typecandidat']) && !empty($this->DemandeRecs['typecandidat']) && $this->DemandeRecs['typecandidat']  =='enseignant') ? 'checked="checked"' : ""?>>
+		<label for="univprive1">Enseignant </label>
+	  </div>
+	  <div class="col-1"></div>
+	  <div class="icheck-danger d-inline">
+		<input type="radio" id="univprive2" name="univprive" value="professionnel" <?=(isset($this->DemandeRecs['typecandidat']) && !empty($this->DemandeRecs['typecandidat']) && $this->DemandeRecs['typecandidat']  =='professionnel') ? 'checked="checked"' : ""?>>
+		<label for="univprive2">Professionnel </label>
+	  </div>
+	  
+	</div>
+	
+<hr>	
+<div class="form-group row clearfix profesionnel" style="display: none;">
+	  <div class="icheck-warning d-inline">
+		<input type="radio" id="secteur1" name="secteurjob"  value="Secteur public"  <?=(isset($this->DemandeRecs['secteurpro']) && !empty($this->DemandeRecs['secteurpro']) && $this->DemandeRecs['secteurpro']  =='Secteur public') ? 'checked="checked"' : ""?>>
+		<label for="secteur1">Secteur public </label>
+	  </div>
+	  <div class="col-1"></div>
+	  <div class="icheck-success  d-inline">
+		<input type="radio" id="secteur2" name="secteurjob" value="Secteur privé" <?=(isset($this->DemandeRecs['secteurpro']) && !empty($this->DemandeRecs['secteurpro']) && $this->DemandeRecs['secteurpro']  =='Secteur privé') ? 'checked="checked"' : ""?>>
+		<label for="secteur2">Secteur privé </label>
+	  </div>
+	  
+	</div>
+<div class="form-group row profesionnel"  style="display: none;">
+	<label for="nom" class="col-sm-3 col-form-label">Entreprise <b class="text-red">*</b></label>
+	<div class="col-sm-9">
+	<input type="text" class="form-control form-control-lg" id="entreprise" name="entreprise" placeholder="Entreprise" value="<?=(isset($this->DemandeRecs['entreprise']) && !empty($this->DemandeRecs['entreprise'])) ? $this->DemandeRecs['entreprise'] : ""?>">
+	</div>
+</div>
+
+<div class="form-group row profesionnel"  style="display: none;">
+	<label for="nom" class="col-sm-3 col-form-label">Poste & Fonction <b class="text-red">*</b></label>
+	<div class="col-sm-9">
+	<input type="text" class="form-control form-control-lg" id="postefonction" name="postefonction" placeholder="Poste & Fonction" value="<?=(isset($this->DemandeRecs['postepro']) && !empty($this->DemandeRecs['postepro'])) ? $this->DemandeRecs['postepro'] : ""?>">
+	</div>
+</div>
+<div class="form-group row universitaire">
+	<label for="univ" class="col-sm-3 col-form-label">Université/DGET <b class="text-red">*</b></label>
+	<div class="col-sm-9">
+	<select  class="form-control form-control-lg" id="univ" name="univ"  placeholder="univ" required>
+	</select>
+	</div>
+</div>
+
+<div class="form-group row universitaire">
+	<label for="etab" class="col-sm-3 col-form-label">Etablissement <b class="text-red">*</b></label>
+	<div class="col-sm-9">
+	<select  class="form-control form-control-lg" id="etab" name="etab" placeholder="etab" required>
+	</select>
+	</div>
+</div>
+
+<div class="form-group row ">
+	<label for="etab" class="col-sm-3 col-form-label">Grade <b class="text-red">*</b></label>
+	<div class="col-sm-9">
+	<select  class="form-control form-control-lg" id="grade" name="grade" placeholder="grade" required>
+	</select>
+	</div>
+</div>
+
+<div class="form-group row">
+	<label for="etab" class="col-sm-3 col-form-label">Spécialité <b class="text-red">*</b></label>
+	<div class="col-sm-9">
+	 
+	<input type="text" class="form-control form-control-lg" id="specialite" name="specialite" placeholder="Spécialité" value="<?=(isset($this->DemandeRecs['specialite']) && !empty($this->DemandeRecs['specialite'])) ? $this->DemandeRecs['specialite'] : ""?>" required>
+	</div>
+</div>
+
+<div class="form-group row">
+	<label for="nom" class="col-sm-3 col-form-label">Dernier diplôme obtenu<b class="text-red">*</b></label>
+	<div class="col-sm-9">
+	<input type="text" class="form-control form-control-lg" id="diplome" name="diplome" placeholder="Dernier diplôme obtenu" value="<?=(isset($this->DemandeRecs['diplome']) && !empty($this->DemandeRecs['diplome'])) ? $this->DemandeRecs['diplome'] : ""?>" required>
+	</div>
+</div>
+</div>
+</div>
+ <hr>
+<div class="card card-success">
+<div class="card-header">Modules à tutorer</div>
+<div class="card-body">
+<table class="table table-bordred">
+
+<tbody id="tableecue">
+<?php $i=1; foreach($this->Participationecue as $f):?>
+<tr>
+	<td> 
+		<select  class="form-control form-control-lg" onchange="changeformation(this.value,'unite1')" id="formation<?=$i?>" name="formation[]" placeholder="Formation" <?=$i==1 ? "required" :""?>>
+		</select>  
+	</td>
+	<td></td>
+	<td> 
+		<select  class="form-control form-control-lg" id="unite<?=$i?>" name="unite[]" placeholder="Unité" <?=$i==1 ? "required" :""?>>
+		</select>
+	</td>
+	<?php if($i>1):?>
+	
+	<td> 
+	 <button type="button" class='btn btn-danger' onClick="$(this).closest('tr').remove();">
+	 x
+	 </button>
+	 </td>
+	<?php endif;?>
+</tr>
+<?php $i++; endforeach;?>
+</tbody>
+</table>
+ <button type="button" class="btn btn-warning" onclick="addecue('tableecue')" >+ Ajouter</button>
+
+</div>
+</div>
+
+
+ 
+
+
+<div class="card  ">
+<div class="card-header bg-purple color-palette">Expérience avec L'Enseignement A Distance (EAD)</div>
+<div class="card-body">
+<div class="form-group row">
+	<label for="description" class="col-sm-3 col-form-label">Formations suivies en TICE et EAD 
+	
+	</label>
+	   <div class="col-sm-1"><button type="button" class="btn btn-success" onclick="addlineformation('formationeadtable')">+</button></div> 
+	<div class="col-sm-8">
+	<table class="table table-bordred">
+		 
+		<tbody id="formationeadtable">
+		<?php foreach($this->ParticipationEAD as $formation):?>
+			 <tr> 
+				<td>
+					<input type='text' class='form-control form-control-lg' name='eadformation[]' placeholder="Formations suivies en TICE et EAD " value="<?=$formation['ead']?>"> 
+				</td> 
+				<td>
+					<input class='form-control form-control-lg' type='date' name='eadformationdate[]' value="<?=date("Y-m-d",strtotime($formation['eaddate']))?>">
+				 </td> 
+				 <td> 
+	 <button type="button" class='btn btn-danger' onClick="$(this).closest('tr').remove();">
+	 x
+	 </button>
+	 </td>
+			</tr> 
+			<?php endforeach;?>
+		</tbody>
+	</table>
+	 
+	</div> 
+</div> 
+
+
+<div class="form-group row">
+	<label for="description" class="col-sm-3 col-form-label">Coordination et/ou Participation à un projet en EAD 
+	</label>
+	 <div class="col-sm-1"><button type="button" class="btn btn-success" onclick="addlineprojet('projeteadtable')">+</button></div> 
+	<div class="col-sm-8">
+	<table class="table table-bordred">
+		  
+		<tbody id="projeteadtable">
+		<?php foreach($this->Participationprojet as $projet):?>
+			<tr>
+				 <td> 
+				 <input type='text' class='form-control form-control-lg' name='eadprojet[]' placeholder="Coordination et/ou Participation à un projet en EAD" value="<?=$projet['projet']?>"> 
+				 </td>   
+				 <td> 
+				 <input class='form-control form-control-lg' type='date' name='eadProjetdate[]' value="<?=date("Y-m-d",strtotime($projet['projetdate']))?>">  
+				 </td> 
+				 <td> 
+	 <button type="button" class='btn btn-danger' onClick="$(this).closest('tr').remove();">
+	 x
+	 </button>
+	 </td>
+			 </tr>
+		<?php endforeach;?>
+		</tbody>
+	</table>
+	 
+	</div> 
+</div> 
+
+
+<div class="form-group row">
+	<label for="description" class="col-sm-3 col-form-label">Décrire l’expérience avec l’UVT </label>
+	<div class="col-sm-9">
+	<textarea  class="form-control form-control-lg" name="expuvt" id="expuvt" placeholder="Décrire l’expérience avec l’UVT"><?=(isset($this->DemandeRecs['expuvt']) && !empty($this->DemandeRecs['expuvt'])) ? $this->DemandeRecs['expuvt'] : ""?></textarea>
+	</div> 
+</div> 
+ 	</div> 
+</div> 
+
+
+<div class="card  ">
+<div class="card-header bg-navy color-palette">Depôt de dossier</div>
+<div class="card-body">
+<div class="form-group row">
+	<label for="dossiercandidat" class="col-sm-3 col-form-label">Déposez votre dossier</label>
+	<div class="col-sm-9">
+	<input type="file" class="form-control form-control-lg" name="dossiercandidat" id="dossiercandidat" placeholder="Déposez votre dossier">
+	</div>
+</div>
+<?php if(!empty($this->DemandeRecs['pathouvre'])):?>
+<a href="upload/<?=$this->DemandeRecs['pathouvre']?>"><i class="fa fa-download"></i>Télécharger votre dossier déjà déposer</a>
+<?php endif;?>
+<p> 
+Déposer votre dossier en format ZIP contenant le CV ainsi que toutes les attestations de formation, diplômes et toutes pièces décrivant vos projets et expérience en TICE et EAD.
+</p>
+
+<div class="visCustomText ">
+
+<p><span style="color: #800000; "><span style="color: #800000;text-decoration: underline; ">NB:</span> La taille maximale du dossier ZIP ne doit pas dépasser <strong>50Mo</strong>, il est conseillé de compresser le fichier avec les formats .zip ou .rar .</span> </p>
+
+<p style="color: #800000;  margin-left: 27px" class="textpmarg"> 
+ Le Fichier doit être soumis au format PDF  
+</p>
+
+</div>
+<br><br>
+<div class="form-group row">
+	<div class="offset-sm-2 col-sm-9">
+	<div class="form-check">
+	<input type="checkbox" class="form-check-input" name="signepersonnel" id="signepersonnel" >
+	<label class="form-check-label" for="exampleCheck2">Je déclare sur l'honneur que les informations ci-dessus sont exactes, <b class="text-red">*</b></label>
+	</div>
+	</div>
+</div>
+ </div>
+ </div>
+<div class="g-recaptcha" data-sitekey="6LdwdIogAAAAAMhaanpwG6Kxlo_gj_sDMcvTkNg3" align="center"></div>
+ <hr>
+<input class="btn btn-block bg-gradient-primary btn-lg" id="enregistrer" aria-label="Envoyer" value="Envoyer" name="enregistrer" type="submit">
+</form>
+
+</div> 
+</div>
+</div>

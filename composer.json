@@ -1,0 +1,22 @@
+{
+    "name": "smartedutech/littelframeworkapp",
+    "description": "skeleton for small mvc application",
+    "type": "project",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "limostr",
+            "email": "oussama.limam@gmail.com"
+        }
+    ],
+    "minimum-stability": "stable",
+    "require": {
+        "smartedutech/littlemvc": "^0.2.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "blocapp\\modules\\":"blocapp/modules/"
+            ,"blocapp\\models\\":"blocapp/models"
+        }
+    }
+}

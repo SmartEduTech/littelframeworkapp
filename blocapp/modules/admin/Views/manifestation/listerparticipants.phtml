@@ -1,0 +1,79 @@
+<script type="text/javascript">
+
+ 
+    function consulter(params){
+
+          $.ajax({
+              type:"POST"
+              ,url: "index.php?activity=consulterparticipation"
+              ,data:{idmatiere:params}
+              ,beforeSend:function(){
+                  $('#edit_editmatiere').html("<i class='icon fa fa-gears'></i> chargement Encours...");
+              }
+              ,success:function(reponse){
+                   $('#edit_editmatiere').html(reponse);
+              }
+          });
+
+    }
+ 
+
+ var tableToExcel = (function() {
+        var uri = 'data:application/vnd.ms-excel;charset=UTF-8;base64,'
+            , template = '<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40"><head><!--[if gte mso 9]><xml><x:ExcelWorkbook><x:ExcelWorksheets><x:ExcelWorksheet><x:Name>{worksheet}</x:Name><x:WorksheetOptions><x:DisplayGridlines/></x:WorksheetOptions></x:ExcelWorksheet></x:ExcelWorksheets></x:ExcelWorkbook></xml><![endif]--></head><body><table>{table}</table></body></html>'
+            , base64 = function(s) { return window.btoa(unescape(encodeURIComponent(s))) }
+            , format = function(s, c) { return s.replace(/{(\w+)}/g, function(m, p) { return c[p]; }) }
+        return function(table, name) {
+            if (!table.nodeType) table = document.getElementById(table)
+            var ctx = {worksheet: name || 'Worksheet', table:   table.innerHTML }
+            window.location.href = uri + base64(format(template, ctx))
+        }
+    })();
+
+</script>
+<div class="col-12">
+<div class="card card-info">
+    <div class="card-header">
+        <h3 class="card-title"><?=\Smartedutech\Littlemvc\Langue::getString("Lister_particiapant")?></h3>
+        <a href="?activity=exportxls" class="btn btn-flat btn-success"><i class="fas fa-file"></i> Export XLS</a>
+		<input type="button" onclick="tableToExcel('tabliste', 'listeCandiat')" value="Export to Excel"/>
+
+    </div>
+    <div class="card-body">
+       
+        <table class="table table-striped table-bordered" id="tabliste"style="width:100%;">
+            <caption><?=\Smartedutech\Littlemvc\Langue::getString("Lister_particiapant")?></caption>
+            <thead>
+            <tr>
+                <?php foreach ($this->Header as $keyhead => $head):?>
+                    <th><?=\Smartedutech\Littlemvc\Langue::getString($head)?></th>
+                <?php endforeach;?>
+            </tr>
+            </thead>
+            <tbody>
+            <?php foreach ($this->liste as $e):?>
+                <tr>
+                    <?php foreach ($this->Header as $keyhead => $head):?>
+                    <?php if(count($this->LinkedId) && isset($this->LinkedId['$keyhead'])):?>
+                    <td></td>
+                    <?php else :?>
+                        <td><?=$e["$keyhead"]?></td>
+                    <?php endif;?>
+                    <?php endforeach;?>
+                    <td> 
+                    <button type="button" class="btn btn-info" onclick="consulter('<?=$e['idparticipation']?>')"><i class="fa fa-eye"></i></button>
+
+                    </td>
+					 <td> 
+					 <a class="btn btn-success"href="upload/<?=$e['pathouvre']?>"><i class="fa fa-download"></i>Dossier</a>
+                     
+
+                    </td>
+                </tr>
+            <?php endforeach;?>
+            </tbody>
+        </table>
+ 
+    </div>
+</div>
+</div>

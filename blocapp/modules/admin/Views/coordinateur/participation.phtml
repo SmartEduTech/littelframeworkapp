@@ -1,0 +1,244 @@
+
+
+	<!-- Main content -->
+    <section class="content">
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-md-3">
+
+            <!-- Profile Image -->
+            <div class="card card-primary card-outline">
+              <div class="card-body box-profile">
+                  
+                <h3 class="profile-username text-center"><?=$this->liste['info']['nom']?> <?=$this->liste['info']['prenom']?></h3>
+
+                <p class="text-muted text-center"><?=$this->liste['info']['typecandidat']?></p>
+  
+                
+              </div>
+              <!-- /.card-body -->
+            </div>
+            <!-- /.card -->
+
+            <!-- About Me Box -->
+            <div class="card card-primary">
+              <div class="card-header">
+                <h3 class="card-title">Qui je suis</h3>
+              </div>
+              <!-- /.card-header -->
+              <div class="card-body">
+                <strong><i class="fas fa-book mr-1"></i> </strong>
+
+                <p class="text-muted">
+                 Mon grade : <?=$this->liste['info']['grade']?>
+                </p>
+
+                <hr>
+
+                <strong><i class="fas fa-map-marker-alt mr-1"></i> Ma spécialité</strong>
+
+                <p class="text-muted"><?=$this->liste['info']['specialite']?></p>
+
+                <hr>
+
+               
+				<?php if($this->liste['info']['typecandidat']=="enseignant"):?>
+				 <strong><i class="fas fa-pencil-alt mr-1"></i>Université </strong>
+				<p class="text-muted">
+                  <span class="tag tag-danger"><?=$this->liste['info']['univ']?></span><br>
+                  
+                </p>
+				<strong><i class="fas fa-pencil-alt mr-1"></i>Etablissement </strong>
+				<p class="text-muted">
+                  
+                  <span class="tag tag-success"><?=$this->liste['info']['etab']?></span>
+              
+                </p>
+				<?php else:?>
+				 <strong><i class="fas fa-pencil-alt mr-1"></i> Entreprise <?=$this->liste['info']['secteur']?> </strong>
+				<p class="text-muted">
+                  <span class="tag tag-danger"><?=$this->liste['info']['entreprise']?></span>
+                   
+                </p>
+				
+				<?php endif;?>
+                
+
+                <hr>
+
+                <strong><i class="far fa-file-alt mr-1"></i> Telecharger mon dossier</strong>
+
+                <p class="text-muted"><a class="btn btn-success"href="upload/<?=$this->liste["info"]['pathouvre']?>"><i class="fa fa-download"></i>Dossier</a></p>
+              </div>
+              <!-- /.card-body -->
+            </div>
+            <!-- /.card -->
+          </div>
+          <!-- /.col -->
+          <div class="col-md-9">
+            <div class="card">
+              <div class="card-header p-2">
+                <ul class="nav nav-pills">
+                  <li class="nav-item"><a class="nav-link active" href="#activity" data-toggle="tab">Mes demandes Tutorats</a></li>
+                  <li class="nav-item"><a class="nav-link" href="#timeline" data-toggle="tab">Mes Formations suivies en TICE et EAD </a></li>
+                  <li class="nav-item"><a class="nav-link" href="#settings" data-toggle="tab">Coordination/Participation à un projet en EAD </a></li>
+                </ul>
+              </div><!-- /.card-header -->
+              <div class="card-body">
+                <div class="tab-content">
+                  <div class="active tab-pane" id="activity">
+                    <!-- Post -->
+					<?php if(!empty($this->liste['info']['expuvt'])):?>
+                    <div class="post">
+                      <div class="user-block">
+                         <span class="username">
+                          <a href="#">Expérience avec l'uvt</a>
+                          <a href="#" class="float-right btn-tool"><i class="fas fa-times"></i></a>
+                        </span>
+                        <span class="description"></span>
+                      </div>
+                      <!-- /.user-block -->
+                      <p>
+                       <?=$this->liste['info']['expuvt']?>
+                      </p> 
+                     </div>
+					 <?php endif;?>
+                    <!-- /.post -->
+					<div class="post">
+                      <div class="user-block">
+                         <span class="username">
+                          <a href="#">J'ai déjà déposé d'autres candidatures pour tutorat:</a>
+                          <a href="#" class="float-right btn-tool"><i class="fas fa-times"></i></a>
+                        </span>
+                        <span class="description"></span>
+                      </div>
+                      <!-- /.user-block -->
+                       <table style="width:100%;" class="table table-bordered table-striped dataTable col-12" id="tabliste"style="width:100%;">
+            <caption><?=\Smartedutech\Littlemvc\Langue::getString("Lister_particiapant")?></caption>
+            <thead>
+            <tr>
+			<th>N°</th>
+               <th>Formation</th>
+			   <th>Niveau</th>
+			   <th>Semestre</th> 
+			   <th>ECUE</th> 
+			    
+            </tr>
+            </thead>
+            <tbody>
+			 
+            <?php $i=0; foreach ($this->liste['participation'] as $e):?> 
+                 
+                     
+					  <!--niveau--> 
+					  <?php foreach ($e["niveau"] as $n):?>  
+						 <!--Semestre--> 
+						 <?php foreach ($n["semestre"] as $s):?> 
+						 <!--ECUE-->
+						  <?php foreach ($s["ecue"] as $k=> $ec):?> 
+						  <!--Candidat-->
+						  
+							<tr>	
+								<td><?=++$i?></td>							
+							  <td><?=$e["info"]["label"]?></td>							
+							  <td><?=$n["info"]["label"]?></td>
+							  <td><?=$s["info"]["label"]?></td>  							
+							  <td><?=$ec["info"]["label"]?></td> 
+							  		   
+							</tr> 
+						  
+						  <?php endforeach;?>
+						 <?php endforeach;?>
+					 <?php endforeach;?>
+              
+            <?php endforeach;?>
+            </tbody>
+        </table>
+                     </div>
+ 
+ 
+                    <!-- /.post -->
+                  </div>
+                  <!-- /.tab-pane -->
+                  <div class="tab-pane" id="timeline">
+                    <!-- The timeline -->
+                    <div class="timeline timeline-inverse">
+					<?php foreach($this->formationead as $ead):?>
+                      <!-- timeline time label -->
+                      <div class="time-label">
+                        <span class="bg-danger">
+                         <?=$ead['eaddate']?>
+                        </span>
+                      </div>
+                      <!-- /.timeline-label -->
+                      <!-- timeline item -->
+                      <div>
+                        <i class="fas fa-eye bg-primary"></i>
+
+                        <div class="timeline-item">
+ 
+                          <h3 class="timeline-header">Formation EAD ou TIC</h3>
+
+                          <div class="timeline-body">
+                            <?=$ead['ead']?>
+                          </div>
+                          <div class="timeline-footer">
+                             
+                          </div>
+                        </div>
+                      </div>
+                      <!-- END timeline item -->
+					  <?php endforeach;?>  
+                      <div>
+                        <i class="far fa-clock bg-gray"></i>
+                      </div>
+                    </div>
+                  </div>
+                  <!-- /.tab-pane -->
+
+                  <div class="tab-pane" id="settings">
+                       <div class="timeline timeline-inverse">
+					<?php foreach($this->projet as $projet):?>
+                      <!-- timeline time label -->
+                      <div class="time-label">
+                        <span class="bg-danger">
+                         <?=$projet['projetdate']?>
+                        </span>
+                      </div>
+                      <!-- /.timeline-label -->
+                      <!-- timeline item -->
+                      <div>
+                        <i class="fas fa-eye bg-primary"></i>
+
+                        <div class="timeline-item">
+ 
+                          <h3 class="timeline-header">Projet</h3>
+
+                          <div class="timeline-body">
+                            <?=$projet['projet']?>
+                          </div>
+                          <div class="timeline-footer">
+                             
+                          </div>
+                        </div>
+                      </div>
+                      <!-- END timeline item -->
+					  <?php endforeach;?>  
+                      <div>
+                        <i class="far fa-clock bg-gray"></i>
+                      </div>
+                    </div>
+                  </div>
+                  </div>
+                  <!-- /.tab-pane -->
+                </div>
+                <!-- /.tab-content -->
+              </div><!-- /.card-body -->
+            </div>
+            <!-- /.card -->
+          </div>
+          <!-- /.col -->
+        </div>
+        <!-- /.row -->
+      </div><!-- /.container-fluid -->
+    </section>

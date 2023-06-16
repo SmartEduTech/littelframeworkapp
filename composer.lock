@@ -1,0 +1,61 @@
+{
+    "_readme": [
+        "This file locks the dependencies of your project to a known state",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
+        "This file is @generated automatically"
+    ],
+    "content-hash": "a048e7e9332ce1b18257110194a6fdcd",
+    "packages": [
+        {
+            "name": "smartedutech/littlemvc",
+            "version": "0.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/SmartEduTech/littlemvc.git",
+                "reference": "0127aa6213a238878e1b144b15ee2910416a6cf8"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/SmartEduTech/littlemvc/zipball/0127aa6213a238878e1b144b15ee2910416a6cf8",
+                "reference": "0127aa6213a238878e1b144b15ee2910416a6cf8",
+                "shasum": ""
+            },
+            "require-dev": {
+                "pcov/clobber": "2",
+                "phpunit/php-code-coverage": "9.2",
+                "phpunit/phpunit": "9.6"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Smartedutech\\Littlemvc\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "limostr",
+                    "email": "oussama.limam@gmail.com"
+                }
+            ],
+            "description": "Littel MVC IS small mvc pattern for a small personnel Framework",
+            "support": {
+                "issues": "https://github.com/SmartEduTech/littlemvc/issues",
+                "source": "https://github.com/SmartEduTech/littlemvc/tree/0.2"
+            },
+            "time": "2023-06-14T13:04:51+00:00"
+        }
+    ],
+    "packages-dev": [],
+    "aliases": [],
+    "minimum-stability": "stable",
+    "stability-flags": [],
+    "prefer-stable": false,
+    "prefer-lowest": false,
+    "platform": [],
+    "platform-dev": [],
+    "plugin-api-version": "2.3.0"
+}

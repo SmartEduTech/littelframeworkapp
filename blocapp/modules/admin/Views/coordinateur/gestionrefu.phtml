@@ -1,0 +1,113 @@
+<SCRIPT type="text/javascript">
+ 
+$(document).ready(function () {
+ 	
+	
+ 	 var optmyformR = {
+            beforeSend: function()  { },
+            uploadProgress: function(event, position, total, percentComplete) { 
+  				
+ 				  
+			},
+            success: function() { },
+            complete: function(response)
+            {
+
+			$("#loadzone").remove(); 
+                var obj = JSON.parse(response.responseText);
+                if(obj.status=="success"){
+                     $("#messagerefu").html("<div class='alert alert-success'>"
+                        +"<button type='button' class='close' data-dismiss='alert'>X</button>"
+                        +"<h4 class='alert-heading'><?=\Smartedutech\Littlemvc\Langue::getString('Succès')?></h4>"
+                        +"<p> "+obj.message
+                        +" </p> </div>"); 
+ 
+						 // $("#loadzone").remove();  
+
+                     
+
+                }else  if(obj.status=="warning"){
+                     $("#messagerefu").html("<div class='alert alert-warning'>"
+                        +"<button type='button' class='close' data-dismiss='alert'>X</button>"
+                        +"<h4 class='alert-heading'><?=\Smartedutech\Littlemvc\Langue::getString('Noté Bien')?></h4>"
+                        +"<p> "+obj.message
+                        +" </p> </div>"); 
+ 
+						//  $("#loadzone").remove();  
+
+                     
+
+                }else{
+
+                    $("#messagerefu").html("<div class='alert alert-block alert-error fade in'>"
+                        +"<button type='button' class='close' data-dismiss='alert'>X</button>"
+                        +"<h4 class='alert-heading'><?=\Smartedutech\Littlemvc\Langue::getString('Error')?></h4>"
+                        +"<p id='merreur'> "+obj.message
+                        +" </p> </div>");
+						//$("#loadzone").remove(); 
+
+                }
+				 
+                return true;
+
+            },
+            error: function(response)
+            {
+				$("#loadzone").remove(); 
+                var obj = JSON.parse(response.responseText);
+                $("#messagerefu").html("<div class='alert alert-block alert-error fade in'>"
+                    +"<button type='button' class='close' data-dismiss='alert'>X</button>"
+                    +"<h4 class='alert-heading'>Bravo</h4>"
+                    +"<p> "+obj.message
+                    +" </p> </div>");
+
+                return false;
+            }
+
+        };
+
+          $("#myFormR").ajaxForm(optmyformR); 
+		   
+	 
+});
+
+ 
+
+ 
+</SCRIPT> 
+ 
+	<div id="messagerefu"></div>
+ <form id="myFormR" enctype="multipart/form-data" method="post" action="index.php?activity=saverefus&idp=<?=$this->idp?>&idu=<?=$this->idu?>" class="form-horizontal"> 
+ 
+			<div class="card card-success">
+			 
+				<div class="card-body">
+				<table class="table table-bordred"> 
+					<tbody id="tableecue">
+						<tr>
+							<td colspan=3> 
+								<select  class="form-control form-control-lg"   id="refusmotif" name="refusmotif" placeholder="Motif"required>
+								<option value="Dossier incomplet" <?= isset($this->refusjustif) &&  isset($this->refusjustif['RefusMotif']) && $this->refusjustif['RefusMotif']=='Dossier incomplet' ? "selected='selected'":'' ?>>Dossier incomplet</option>
+								<option value="Hors Discipline" <?= isset($this->refusjustif) &&  isset($this->refusjustif['RefusMotif']) && $this->refusjustif['RefusMotif']=='Hors Discipline' ? "selected='selected'":'' ?>>Hors Discipline</option>
+								<option value="Grade insuffisant" <?= isset($this->refusjustif) &&  isset($this->refusjustif['RefusMotif']) && $this->refusjustif['RefusMotif']=='Grade insuffisant' ? "selected='selected'":'' ?>>Grade insuffisant</option>
+								<option value="Expérience insuffisante" <?= isset($this->refusjustif) &&  isset($this->refusjustif['RefusMotif']) && $this->refusjustif['RefusMotif']=='Expérience insuffisante' ? "selected='selected'":'' ?>>Expérience insuffisante</option>
+								</select>  
+							</td>
+							 
+						</tr>
+						<tr>
+							<td colspan=3> 
+								<textarea  class="form-control form-control-lg" name="motiftext"  required><?=isset($this->refusjustif['Justif']) && !empty($this->refusjustif['Justif']) ? $this->refusjustif['Justif'] : ''?></textarea>  
+							</td>
+						</tr> 
+						
+					</tbody>
+				</table>
+ 				</div>
+				</div> 
+			<input type="submit" value="Enregistrer" name="ajouter" class="btn btn-success">
+			<input type="submit" value="Annuler" name="annuler" class="btn btn-danger">
+
+		</form>
+	 
+	 

@@ -1,0 +1,128 @@
+ 
+<SCRIPT type="text/javascript">
+function changeformation(idf,idu){ 
+			
+			var url="index.php?activity=habilitation2&idformation="+idf; 
+			window.open(url, "_blank");
+}
+$(function() {
+$.ajax({
+			type:"POST",
+			url:"index.php?activity=getformation", 
+			beforeSend :function(){
+				$('#formation1').html("<option>Encours... </option>");
+			 
+			},
+			success:function(response){
+				$("#formation1").html(response); 
+				 
+			}
+		}); 
+
+});
+
+</SCRIPT>
+
+ <div class="col-md-8 center">
+<div class="card" id="formload">
+<div class="card-header">
+	<img src="images/logo-color.svg" alt="Logo UVT" style="width:100%;">
+<div>
+<div class="card-body">
+
+ <div class="card">
+ <div class="card-body">
+ <h1 class="text-center" style="color:#17a2b8;" >Plans d'études des formations dispensées à l'UVT pour l'A.U 2022-2023</h1>
+ <select  class="form-control form-control-lg" onchange="changeformation(this.value,'listeunite')" id="formation1" name="formation1" placeholder="Formation" required>
+		</select>
+ 
+ </div>
+ 
+ </div>
+ <?php foreach ($this->modules as $modules):?>
+<div class="card">
+<div class="card-header" style="border: thick double #32a1ce;">
+	<h3 class="text-center" ><?=!isset($modules['info']['formation']) ? $modules['info']['formation'] : $modules['info']['formation']?>(<?=$modules['info']['abrev']?>)</h3>
+	 
+  
+ </div>
+
+<div class="card-body" id="contentUEDiv"> 
+ <table class="table table-bordred">
+
+    <tbody>
+
+        <?php foreach ($modules['semestre'] as $p):?>
+            <tr class="bg-purple-gradient text-center">
+
+                <th>Code_Ue</th>
+                <th>Libelle</th>
+                <th>Cr</th>
+                <th>Coef</th>
+                <th>Nat</th>
+                <th>Rg</th> 
+                <th>Eléments d'enseignements</th>
+            </tr>
+        <tr>
+            <td colspan="8" class="bg-gray">Niveau <?=$p['level']?> : <?=$p['semestres']?></td>
+        </tr>
+        <?php foreach ($p['UE'] as $keyue=> $module):?>
+
+
+        <tr>
+			<!--UE-->
+			<td><?=$module['info']['codeue']?> </td>
+			<td><?=$module['info']['titremodule']?></td>
+			<td><?=$module['info']['credit']?></td>
+			<td><?=$module['info']['coef']?></td>
+			<td><?=$module['info']['nature']?></td>
+			<td><?=$module['info']['regime']?></td>
+        
+        <!--FIN UE-->
+        <!--ECUE-->
+        <td>
+            <table class="table table-bordered">
+                <thead>
+                <!--ECUE-->
+                <tr class="bg-green-gradient"> 
+                    <th>Code_ECUE</th>
+                    <th>Libelle</th>
+                    <th>Cr</th>
+                    <th>Coef</th>
+                    <th>Rg</th> 
+					 
+                </tr>
+                <!--FIN ECUE-->
+                </thead>
+                <tbody>
+                <!--ECUE-->
+                <!--FIN ECUE-->
+                <?php if (isset($module['ECUE'])):?>
+					<?php foreach ($module['ECUE'] as $keyecue => $ecue):?>
+					<!--ECUE-->
+					<tr> 
+						<td><?=$ecue['codeue']?></td>
+						<td><?=$ecue['titremodule']?></td>
+						<td><?=$ecue['credit']?></td>
+						<td><?=$ecue['coef']?></td>
+						<td><?=$ecue['regime']?></td>  
+						 
+					</tr>
+					<!--FIN ECUE-->
+					<?php endforeach;?>
+				<?php endif;?>
+                </tbody>
+            </table>
+        </td>
+        <!--FIN ECUE-->
+    </tr>
+    <?php endforeach;?>
+    <?php endforeach;?>
+    </tbody>
+ </table>
+ </div>
+ </div>
+ <?php endforeach;?>
+ 
+  </div>
+ </div>
