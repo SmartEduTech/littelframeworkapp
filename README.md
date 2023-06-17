@@ -45,13 +45,13 @@ the file used to generate your CRUD is '/public/generator.php'
 ## Development mode configure generator
 to configure the crud you must implement this file 'vendor\smartedutech\litelle-framework-generator\src\Configgen\module.php' 
 the file content the name of package and the name of your controllers and actions with the database tables 
-'''configure application package
+```configure application package
 $_APP_CONF=array(
     "APPNAME"=>"e-lab-reservation"
 );
-'''
+```
 
-'''module configure
+```module configure
  "modules"=>array(
         "admin"=>array(
             "name"=>"admin"
@@ -59,16 +59,16 @@ $_APP_CONF=array(
             )
         )
  )
- '''
+ ```
 
  ''controllers configure
  "roles"=>array(
     "name"=>"roles",
     "actions"=>array()
  )
- '''
+ ```
 
-'''action configure
+```action configure
 "{Controller}"=>array(
         "name"=>"{Controller}",
         "actions"=>array(
@@ -91,7 +91,7 @@ $_APP_CONF=array(
                 )
             ),
         )
-'''
+```
 
   
 
