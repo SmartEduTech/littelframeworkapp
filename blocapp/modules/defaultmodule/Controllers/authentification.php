@@ -10,7 +10,7 @@ class authentification extends Controller
 {
   public function Acceuil(){
         $Vue=new View();
-        $Vue->titre="Application de gestion des stages";
+        $Vue->titre="E-Lab reservation";
 
         $Vue->generate();
     }
@@ -32,16 +32,16 @@ public function logincoordinateur(){
 
        $login= trim($this->_getRequest("login"));
        $MPW= trim($this->_getRequest("password")); 
-         $authentification=dbadapter::SelectSQL("SELECT * FROM personnes  WHERE email='$login' AND password=md5('$MPW') ");
+         $authentification=dbadapter::SelectSQL("SELECT * FROM personnes  WHERE login='$login' AND pwd=md5('$MPW') ");
          //die("SELECT * FROM personnes  WHERE email='$login' AND password=md5('$MPW') ");
-        if($authentification && $authentification[0]['idroles']!='Coordinateur'){
+        if($authentification && $authentification[0]['idroles']!='Admin'){
             //print_r($authentification);die();
             @ session_start();
             $_SESSION['authentifier']=true;
             $_SESSION['username']=$authentification[0]['nom']." ".$authentification[0]['prenom'];
             $_SESSION['ROLE']="Admin";
             $_SESSION['idpersonnes']=$authentification[0]['idpersonnes'];
-            header('Location: index.php?activity=listeparticipant');
+            header('Location: index.php?activity=menuadmin');
 
 
         }else{

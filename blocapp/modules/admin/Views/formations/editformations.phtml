@@ -1,0 +1,61 @@
+<script>
+
+    $(function(){
+
+
+        var optmyform = {
+            beforeSend: function()  { },
+            uploadProgress: function(event, position, total, percentComplete) { },
+            success: function() { },
+            complete: function(response)
+            {
+
+
+                var obj = JSON.parse(response.responseText);
+                if(obj.status=="success"){
+                    $("#messageEditformations_Titre").html("<div class='alert alert-success'>"
+                        +"<button type='button' class='close' data-dismiss='alert'>X</button>"
+                        +"<h4 class='alert-heading'><?=\Smartedutech\Littlemvc\Langue::getString('Success_save_formations')?></h4>"
+                        +"<p> "+obj.message
+                        +" </p> </div>");
+
+                       loadPage("listerformations","content_listerformations");
+
+                    $("#formations")[0].reset();
+
+                }else{
+
+                    $("#messageEditformations_Titre").html("<div class='alert alert-block alert-error fade in'>"
+                        +"<button type='button' class='close' data-dismiss='alert'>X</button>"
+                        +"<h4 class='alert-heading'><?=\Smartedutech\Littlemvc\Langue::getString('Error_save_formations')?></h4>"
+                        +"<p id='merreur'> "+obj.message
+                        +" </p> </div>");
+
+
+                }
+                return true;
+
+            },
+            error: function(response)
+            {
+                var obj = JSON.parse(response.responseText);
+                $("#messageEditformations_Titre").html("<div class='alert alert-block alert-error fade in'>"
+                    +"<button type='button' class='close' data-dismiss='alert'>X</button>"
+                    +"<h4 class='alert-heading'><?=\Smartedutech\Littlemvc\Langue::getString('Success_save_formations')?></h4>"
+                    +"<p> "+obj.message
+                    +" </p> </div>");
+
+                return false;
+            }
+
+        };
+
+          $("#formations").ajaxForm(optmyform);
+
+
+    });
+</script>
+
+<div id="messageEditformations_Titre"></div>
+<h1><?=\Smartedutech\Littlemvc\Langue::getString("Edit_formations")?></h1>
+<?=$this->form?>

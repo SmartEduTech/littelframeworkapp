@@ -1,0 +1,27 @@
+<div class="box">
+  <div class="box-header"></div>
+  <div class="box-body">
+    <table>
+    <?php foreach ($this->liste as $key => $e):?>
+        <tr>
+
+              <?php if(count($this->LinkedId) && isset($this->LinkedId['$keyhead'])):?>
+              <th><?=isset($this->datas["$key"]) ? $this->datas["$key"] : $key?></th>
+              <td></td>
+              <?php else :?>
+                <th><?=isset($this->datas["$key"]) ? $this->datas["$key"] : $key?></th>
+                <td><?=$e?></td>
+              <?php endif;?>
+
+        </tr>
+    <?php endforeach;?>
+
+    </table>
+  </div>
+  <div class="box-footer">
+
+  </div>
+
+
+
+</div>

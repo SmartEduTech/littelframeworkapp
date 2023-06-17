@@ -1,0 +1,40 @@
+<script>
+
+    function loadPage(page,zone){
+        $.ajax({
+            type:"POST"
+            ,url:"index.php?activity="+page
+
+            ,beforeSend:function(){
+                $('#'+zone).html("<i class='icon fa fa-gears'></i> <?=\Smartedutech\Littlemvc\Langue::getString('Chargement_formations')?>");
+            }
+            ,success:function(reponse){
+                $('#'+zone).html(reponse);
+            }
+        });
+    }
+
+    $(function(){
+        loadPage("editformations","edit_editformations");
+        loadPage("listerformations","content_listerformations");
+    });
+</script>
+
+<div class ="row">
+    <div class="col-md-6">
+        <div class="box">
+            <div class="box-header"><?=\Smartedutech\Littlemvc\Langue::getString("Edit_formations")?></div>
+            <div class="box-body" id="edit_editformations">
+
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="box">
+            <div class="box-header"><?=\Smartedutech\Littlemvc\Langue::getString("Lister_formations")?></div>
+            <div class="box-body" id="content_listerformations">
+
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,110 @@
+<script type="text/javascript">
+
+
+    function edit(params){
+
+          $.ajax({
+              type:"POST"
+              ,url: "index.php?activity=edit{Table}"
+              ,data:{id{Table}:params,mode:"<?=$this->mode?>"}
+              ,beforeSend:function(){
+                  $('#edit_edit{Table}').html("<i class='icon fa fa-gears'></i> chargement Encours...");
+              }
+              ,success:function(reponse){
+                     $('#edit_edit{Table}').html(reponse);
+              }
+          });
+
+    }
+    function consulter(params){
+
+          $.ajax({
+              type:"POST"
+              ,url: "index.php?activity=consulter{Table}"
+              ,data:{id{Table}:params}
+              ,beforeSend:function(){
+                  $('#edit_edit{Table}').html("<i class='icon fa fa-gears'></i> chargement Encours...");
+              }
+              ,success:function(reponse){
+                   $('#edit_edit{Table}').html(reponse);
+              }
+          });
+
+    }
+    function deleteAct(params) {
+
+        $.confirm({
+            title: '<?=\Smartedutech\Littlemvc\Langue::getString('Confirm_delete_{Table}')?>!!',
+            content: '<?=\Smartedutech\Littlemvc\Langue::getString('Confirm_delete_{Table}')?>!!',
+            buttons: {
+                confirm:{
+                    text: "<i class='icon fa fa-trash'></i>Supprimer",
+                    btnClass: 'btn-danger',
+
+                    action :function () {
+                        $.ajax({
+                            type:"POST"
+                            ,url: "index.php?activity=delete{Table}"
+                            ,data:{id{Table}:params}
+                            ,beforeSend:function(){
+                                $('#content_defin').html("<i class='icon fa fa-gears'></i> chargement Encours...");
+                            }
+                            ,success:function(reponse){
+                                var obj = JSON.parse(reponse);
+                                if(obj.status=="success") {
+                                  loadPage("lister{Table}","content_lister{Table}");
+
+                                }else{
+                                    $.alert("<?=\Smartedutech\Littlemvc\Langue::getString('Problem_delete_{Table}')?>! "+obj.message);
+                                }
+
+
+                            }
+                        });
+                    }
+                } ,
+                cancel:  {
+                    text: 'Annuler',
+                    btnClass: 'btn-warning',
+                    action: function(){
+                        $.alert('<?=\Smartedutech\Littlemvc\Langue::getString('Annuler_delete_{Table}')?>');
+                    }
+                }
+            }
+        });
+    }
+
+
+</script>
+
+<table class="table table-bordered table-striped">
+    <caption><?=\Smartedutech\Littlemvc\Langue::getString("Lister_{Table}")?></caption>
+    <thead>
+    <tr>
+        <?php foreach ($this->Header as $keyhead => $head):?>
+            <th><?=\Smartedutech\Littlemvc\Langue::getString($head)?></th>
+        <?php endforeach;?>
+    </tr>
+    </thead>
+    <tbody>
+    <?php foreach ($this->liste as $e):?>
+        <tr>
+            <?php foreach ($this->Header as $keyhead => $head):?>
+              <?php if(count($this->LinkedId) && isset($this->LinkedId['$keyhead'])):?>
+              <td></td>
+              <?php else :?>
+                <td><?=$e["$keyhead"]?></td>
+              <?php endif;?>
+            <?php endforeach;?>
+            <td>
+                <button type="button" class="btn btn-danger" onclick="deleteAct('<?=$e['id{Table}']?>')"><i class="fa fa-trash"></i></button>
+
+<button type="button" class="btn btn-success" onclick="edit('<?=$e['id{Table}']?>')"><i class="fa fa-edit"></i></button>
+
+<button type="button" class="btn btn-info" onclick="consulter('<?=$e['id{Table}']?>')"><i class="fa fa-eye"></i></button>
+
+            </td>
+        </tr>
+    <?php endforeach;?>
+    </tbody>
+</table>

@@ -4,8 +4,45 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "a048e7e9332ce1b18257110194a6fdcd",
+    "content-hash": "19961b7fefe7472917a1f6a35c879374",
     "packages": [
+        {
+            "name": "smartedutech/litelle-framework-generator",
+            "version": "0.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/SmartEduTech/litelleFrameworkGenerator.git",
+                "reference": "80b65a48771403281079b9e81ea8d167a6b5ed3c"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/SmartEduTech/litelleFrameworkGenerator/zipball/80b65a48771403281079b9e81ea8d167a6b5ed3c",
+                "reference": "80b65a48771403281079b9e81ea8d167a6b5ed3c",
+                "shasum": ""
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Smartedutech\\LitelleFrameworkGenerator\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "limostr",
+                    "email": "oussama.limam@gmail.com"
+                }
+            ],
+            "description": "generator from database application based bootstrap 3 css",
+            "support": {
+                "issues": "https://github.com/SmartEduTech/litelleFrameworkGenerator/issues",
+                "source": "https://github.com/SmartEduTech/litelleFrameworkGenerator/tree/0.2"
+            },
+            "time": "2023-06-17T12:42:01+00:00"
+        },
         {
             "name": "smartedutech/littlemvc",
             "version": "0.2",

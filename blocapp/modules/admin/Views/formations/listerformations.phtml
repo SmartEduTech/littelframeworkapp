@@ -1,0 +1,110 @@
+<script type="text/javascript">
+
+
+    function edit(params){
+
+          $.ajax({
+              type:"POST"
+              ,url: "index.php?activity=editformations"
+              ,data:{idformations:params,mode:"<?=$this->mode?>"}
+              ,beforeSend:function(){
+                  $('#edit_editformations').html("<i class='icon fa fa-gears'></i> chargement Encours...");
+              }
+              ,success:function(reponse){
+                     $('#edit_editformations').html(reponse);
+              }
+          });
+
+    }
+    function consulter(params){
+
+          $.ajax({
+              type:"POST"
+              ,url: "index.php?activity=consulterformations"
+              ,data:{idformations:params}
+              ,beforeSend:function(){
+                  $('#edit_editformations').html("<i class='icon fa fa-gears'></i> chargement Encours...");
+              }
+              ,success:function(reponse){
+                   $('#edit_editformations').html(reponse);
+              }
+          });
+
+    }
+    function deleteAct(params) {
+
+        $.confirm({
+            title: '<?=\Smartedutech\Littlemvc\Langue::getString('Confirm_delete_formations')?>!!',
+            content: '<?=\Smartedutech\Littlemvc\Langue::getString('Confirm_delete_formations')?>!!',
+            buttons: {
+                confirm:{
+                    text: "<i class='icon fa fa-trash'></i>Supprimer",
+                    btnClass: 'btn-danger',
+
+                    action :function () {
+                        $.ajax({
+                            type:"POST"
+                            ,url: "index.php?activity=deleteformations"
+                            ,data:{idformations:params}
+                            ,beforeSend:function(){
+                                $('#content_defin').html("<i class='icon fa fa-gears'></i> chargement Encours...");
+                            }
+                            ,success:function(reponse){
+                                var obj = JSON.parse(reponse);
+                                if(obj.status=="success") {
+                                  loadPage("listerformations","content_listerformations");
+
+                                }else{
+                                    $.alert("<?=\Smartedutech\Littlemvc\Langue::getString('Problem_delete_formations')?>! "+obj.message);
+                                }
+
+
+                            }
+                        });
+                    }
+                } ,
+                cancel:  {
+                    text: 'Annuler',
+                    btnClass: 'btn-warning',
+                    action: function(){
+                        $.alert('<?=\Smartedutech\Littlemvc\Langue::getString('Annuler_delete_formations')?>');
+                    }
+                }
+            }
+        });
+    }
+
+
+</script>
+
+<table class="table table-bordered table-striped">
+    <caption><?=\Smartedutech\Littlemvc\Langue::getString("Lister_formations")?></caption>
+    <thead>
+    <tr>
+        <?php foreach ($this->Header as $keyhead => $head):?>
+            <th><?=\Smartedutech\Littlemvc\Langue::getString($head)?></th>
+        <?php endforeach;?>
+    </tr>
+    </thead>
+    <tbody>
+    <?php foreach ($this->liste as $e):?>
+        <tr>
+            <?php foreach ($this->Header as $keyhead => $head):?>
+              <?php if(count($this->LinkedId) && isset($this->LinkedId['$keyhead'])):?>
+              <td></td>
+              <?php else :?>
+                <td><?=$e["$keyhead"]?></td>
+              <?php endif;?>
+            <?php endforeach;?>
+            <td>
+                <button type="button" class="btn btn-danger" onclick="deleteAct('<?=$e['idformations']?>')"><i class="fa fa-trash"></i></button>
+
+<button type="button" class="btn btn-success" onclick="edit('<?=$e['idformations']?>')"><i class="fa fa-edit"></i></button>
+
+<button type="button" class="btn btn-info" onclick="consulter('<?=$e['idformations']?>')"><i class="fa fa-eye"></i></button>
+
+            </td>
+        </tr>
+    <?php endforeach;?>
+    </tbody>
+</table>

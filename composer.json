@@ -11,7 +11,8 @@
     ],
     "minimum-stability": "stable",
     "require": {
-        "smartedutech/littlemvc": "^0.2.0"
+        "smartedutech/littlemvc": "^0.2.0",
+        "smartedutech/litelle-framework-generator": "^0.2.0"
     },
     "autoload": {
         "psr-4": {
