@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "19961b7fefe7472917a1f6a35c879374",
+    "content-hash": "215411a8db25cc38c5c28723695f499e",
     "packages": [
         {
             "name": "smartedutech/litelle-framework-generator",
@@ -45,16 +45,16 @@
         },
         {
             "name": "smartedutech/littlemvc",
-            "version": "0.2",
+            "version": "0.6",
             "source": {
                 "type": "git",
                 "url": "https://github.com/SmartEduTech/littlemvc.git",
-                "reference": "0127aa6213a238878e1b144b15ee2910416a6cf8"
+                "reference": "1291d7a6d43a3280b0c689df99ac1e10e7cae637"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/SmartEduTech/littlemvc/zipball/0127aa6213a238878e1b144b15ee2910416a6cf8",
-                "reference": "0127aa6213a238878e1b144b15ee2910416a6cf8",
+                "url": "https://api.github.com/repos/SmartEduTech/littlemvc/zipball/1291d7a6d43a3280b0c689df99ac1e10e7cae637",
+                "reference": "1291d7a6d43a3280b0c689df99ac1e10e7cae637",
                 "shasum": ""
             },
             "require-dev": {
@@ -81,9 +81,9 @@
             "description": "Littel MVC IS small mvc pattern for a small personnel Framework",
             "support": {
                 "issues": "https://github.com/SmartEduTech/littlemvc/issues",
-                "source": "https://github.com/SmartEduTech/littlemvc/tree/0.2"
+                "source": "https://github.com/SmartEduTech/littlemvc/tree/0.6"
             },
-            "time": "2023-06-14T13:04:51+00:00"
+            "time": "2023-10-30T00:05:47+00:00"
         }
     ],
     "packages-dev": [],
