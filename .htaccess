@@ -1,0 +1,9 @@
+RewriteEngine On
+RewriteBase /humanrise/public/
+
+# Autoriser les accès directs aux ressources (css, js, images, etc.)
+RewriteCond %{REQUEST_FILENAME} -f
+RewriteRule ^ - [L]
+
+# Sinon, rediriger vers index.php avec parsing d'URL propre
+RewriteRule ^([a-zA-Z0-9_-]+)(?:/(.*))?$ index.php?activity=$1&params=$2 [QSA,L]
